@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: telegram-girls-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: "8286246486:AAEAYZcReAcrvDSd2Nr5cfIuCbXan_rLDVA"
