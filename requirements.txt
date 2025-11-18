@@ -1,6 +1,1 @@
-python-telegram-bot
-requests
-python-dotenv
-aiohttp
-
-
+python-telegram-bot==20.7
