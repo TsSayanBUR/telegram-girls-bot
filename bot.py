@@ -2,69 +2,70 @@ import os
 import logging
 import random
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-# Настройки
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 
-# Логирование
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def start(update: Update, context: CallbackContext):
     keyboard = [
-        [KeyboardButton("🌙 Луна"), KeyboardButton("🔥 Стелла")],
-        [KeyboardButton("📊 Статус")]
+        [KeyboardButton("Luna"), KeyboardButton("Stella")],
+        [KeyboardButton("Status")]
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     
-    text = "Привет! Я бот с девушками. Выбери действие:"
-    await update.message.reply_text(text, reply_markup=reply_markup)
+    text = "Hello! I am a bot with girls. Choose an action:"
+    update.message.reply_text(text, reply_markup=reply_markup)
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def handle_message(update: Update, context: CallbackContext):
     user_message = update.message.text
     
-    if user_message == "🌙 Луна":
+    if user_message == "Luna":
         responses = [
-            "Привет! Я Луна. Рада познакомиться!",
-            "Здравствуй! Я Луна. Как твои дела?",
-            "О, ты выбрал меня! Я Луна."
+            "Hello! I'm Luna. Nice to meet you!",
+            "Hi! I'm Luna. How are you?",
+            "Oh, you chose me! I'm Luna."
         ]
         response = random.choice(responses)
-        await update.message.reply_text(response)
+        update.message.reply_text(response)
         
-    elif user_message == "🔥 Стелла":
+    elif user_message == "Stella":
         responses = [
-            "Привет, я Стелла. Ты выглядишь интересно!",
-            "Я Стелла. Что привело тебя ко мне?",
-            "О, наконец-то! Я Стелла."
+            "Hi, I'm Stella. You look interesting!",
+            "I'm Stella. What brought you to me?",
+            "Finally! I'm Stella."
         ]
         response = random.choice(responses)
-        await update.message.reply_text(response)
+        update.message.reply_text(response)
         
-    elif user_message == "📊 Статус":
-        await update.message.reply_text("✅ Бот работает отлично!")
+    elif user_message == "Status":
+        update.message.reply_text("Bot is working fine!")
         
     else:
-        await update.message.reply_text("Выбери действие из меню!")
+        update.message.reply_text("Please choose an action from the menu!")
 
 def main():
     if not TOKEN:
         logger.error("TELEGRAM_TOKEN not found")
         return
     
-    application = Application.builder().token(TOKEN).build()
+    updater = Updater(TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
     
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
     
     logger.info("Starting bot...")
-    application.run_polling()
+    updater.start_polling()
+    updater.idle()
 
-if __name__ == "__main__":
+if name == "__main__":
     main()
+
 
 
